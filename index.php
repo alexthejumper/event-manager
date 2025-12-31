@@ -35,6 +35,17 @@
             Show Countdown
           </button>
 
+          <button 
+  class="btn btn-outline-secondary btn-sm w-100 mb-2"
+  onclick="startFixedCountdown(
+    '<?= $event['title'] ?>',
+    '<?= $event['start_datetime'] ?>',
+    '<?= $event['end_datetime'] ?>'
+  )">
+  Start Duration Countdown
+</button>
+
+
           <div class="d-flex gap-2">
             <a href="edit_event.php?id=<?= $event['id'] ?>" class="btn btn-warning w-50">Update</a>
             <a href="delete_event.php?id=<?= $event['id'] ?>" 
@@ -88,6 +99,47 @@
     }, 1000);
   }
 </script>
+
+
+<script>
+  function startFixedCountdown(title, start, end) {
+    clearInterval(countdownTimer);
+
+    const countdownArea = document.getElementById("countdownArea");
+
+    const startTime = new Date(start).getTime();
+    const endTime = new Date(end).getTime();
+
+    let remainingSeconds = Math.floor((endTime - startTime) / 1000);
+
+    if (remainingSeconds <= 0) {
+      countdownArea.innerHTML =
+        `<strong>${title}</strong><br>Invalid duration.`;
+      return;
+    }
+
+    countdownArea.innerHTML =
+      `<strong>${title}</strong><br><span id="countdownText"></span>`;
+
+    countdownTimer = setInterval(() => {
+      if (remainingSeconds <= 0) {
+        document.getElementById("countdownText").innerText = "00:00";
+        clearInterval(countdownTimer);
+        return;
+      }
+
+      const minutes = Math.floor(remainingSeconds / 60);
+      const seconds = remainingSeconds % 60;
+
+      document.getElementById("countdownText").innerText =
+        `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+      remainingSeconds--;
+    }, 1000);
+  }
+</script>
+
+
 
 </body>
 </html>
